@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Entrelinhas — Jogo</title>
+<meta name="description" content="Lobby, distribuição de cartas e cronômetro do jogo Entrelinhas">
+<link rel="icon" href="assets/logo.png">
+<link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+</head>
+<body>
+<main id="app">
+<section id="home" class="screen">
+  <div class="brand"><img src="assets/logo.png" alt="Entrelinhas"><p></p></div>
+  <div class="home-actions">
+    <button id="createRoom" class="primary big">Criar sala</button>
+    <button id="showJoin" class="secondary big">Entrar em uma sala</button>
+  </div>
+  <div class="how"><b>Como funciona:</b><span>O host cria uma sala, envia o código pelo Discord e só inicia quando todos tiverem entrado.</span></div>
+</section>
+
+<section id="create" class="screen hidden">   
+  <header><button id="backFromCreate" class="ghost">← Voltar</button></header>
+  <div class="panel narrow">
+    <div class="eyebrow">CRIAR SALA</div>
+    <h1>Configure a partida</h1>
+    <div class="grid">
+      <label>Jogadores<select id="players"></select></label>
+      <label>Espiões<select id="spies"></select></label>
+      <label>Tempo da rodada<select id="duration"><option value="60">1 minuto</option><option value="120">2 minutos</option><option value="180" selected>3 minutos</option><option value="300">5 minutos</option><option value="600">10 minutos</option><option value="900">15 minutos</option><option value="1200">20 minutos</option></select></label>
+    </div>
+    <p id="validation" class="hint"></p>
+    <button id="makeRoom" class="primary">Criar sala e abrir lobby</button>
+  </div>
+</section>
+
+<section id="join" class="screen hidden">
+  <header><button id="backFromJoin" class="ghost">← Voltar</button></header>
+  <div class="panel narrow">
+    <div class="eyebrow">ENTRAR</div>
+    <h1>Entre na sala</h1> <br> 
+    <label>Código da sala<input id="roomCode" maxlength="6" autocomplete="off" autocapitalize="characters" placeholder="ABC123"></label><br> 
+    <label>Seu nome<input id="playerName" maxlength="24" autocomplete="nickname" placeholder="Ex.: Isabella"></label>
+    <p id="joinError" class="hint"></p>
+    <button id="joinRoom" class="primary">Entrar na sala</button>
+  </div>
+</section>
+
+<section id="lobbyHost" class="screen hidden">
+  <header><div class="brand small"><img src="assets/logo.png" alt="Entrelinhas"></div><button id="cancelRoom" class="ghost">Encerrar sala</button></header>
+  <div class="lobby-grid">
+    <div class="panel room-code-panel">
+      <div class="eyebrow">CÓDIGO DA SALA</div><div id="hostRoomCode" class="room-code">------</div>
+      <p class="hint">Mande este código no Discord. A partida só começa quando você apertar o botão.</p>
+      <div class="settings-summary" id="settingsSummary"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-heading"><div><div class="eyebrow">JOGADORES</div><h2 id="hostCount">0 / 0</h2></div><span id="lobbyStatus" class="pill">Aguardando</span></div>
+      <div id="hostPlayers" class="players-list"></div>
+      <p id="hostLobbyHint" class="hint">Aguardando jogadores...</p>
+      <button id="startGame" class="primary" disabled>Iniciar partida</button>
+    </div>
+  </div>
+</section>
+
+<section id="lobbyPlayer" class="screen hidden">
+  <div class="player-wrap">
+    <img class="player-logo" src="assets/logo.png" alt="Entrelinhas">
+    <div class="eyebrow">SALA <span id="playerRoomCode">------</span></div>
+    <h1 id="waitingTitle">Você entrou!</h1>
+    <div class="waiting-card"><div class="waiting-dot"></div><strong>Aguardando o anfitrião iniciar a partida.</strong><span id="playerLobbyCount">—</span></div>
+    <p class="hint">Não feche esta página. Quando o anfitrião iniciar, sua carta aparecerá aqui automaticamente.</p>
+  </div>
+</section>
+
+<section id="hostGame" class="screen hidden">
+  <header><div class="brand small"><img src="assets/logo.png" alt="Entrelinhas"></div><button id="newHostRoom" class="ghost">Nova sala</button></header>
+  <div class="host-grid">
+    <div class="panel"><div class="eyebrow">LOCAL DA RODADA</div><h1 id="hostLocation">—</h1><div class="timer" id="hostTimer">03:00</div><div class="timer-status" id="hostStatus">Partida em andamento</div><p class="hint">A conversa e a votação acontecem no Discord.</p></div>
+    <div class="panel"><div class="eyebrow">SALA</div><div id="gameRoomCode" class="room-code small-code">------</div><div class="settings-summary" id="gameSummary"></div></div>
+  </div>
+</section>
+
+<section id="playerGame" class="screen hidden">
+  <div class="player-wrap">
+    <img class="player-logo" src="assets/logo.png" alt="Entrelinhas">
+    <div class="eyebrow">SUA CARTA</div>
+    <div class="card" id="card"><img id="cardImage" class="game-card-image hidden" src="" alt=""><div id="roleType">—</div><strong id="roleValue">—</strong><small id="locationValue">—</small></div>
+    <div class="player-timer" id="playerTimer">03:00</div><div class="timer-status" id="playerStatus">Partida em andamento</div>
+    <p class="hint">Não mostre esta tela aos outros jogadores.</p>
+  </div>
+</section>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+</main>
+<script src="data.js"></script><script src="app.js"></script>
+</body></html>
